@@ -1,0 +1,33 @@
+import RPi.GPIO as gpio
+import pymysql.cursors
+import time
+
+db = pymysql.connect(host="192.168.0.27", user="DESKTOP-BUG5QVG", password="vnfmwldh2@", database="covid")
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+pin = 5
+
+print "start"
+
+GPIO.setup(pin, GPIO.IN)
+
+try:
+while True:
+input = GPIO.input(pin)
+print(input)
+time.sleep(1)
+if input == 1:
+cur = db.cursor()
+sql = "INSERT INTO tb_quantity(quantity) VALUE('1')"
+cur.execute(sql)
+db.cummit()
+else:
+cur = db.cursor()
+sql = "INSERT INTO tb_quantity(quantity) VALUE('0')"
+cur.execute(sql)
+db.cummit()
+except KeyboardInterrupt:
+GPIO.cleanup()
+db.close()
